@@ -540,9 +540,9 @@ public class TestSuiteWriter implements Opcodes {
         builder.append(adapter.getImports());
         builder.append(getImports(results));
 
-        if (TestSuiteWriterUtils.needToUseAgent() && !Properties.NO_RUNTIME_DEPENDENCY) {
-            builder.append(getRunner());
-        }
+        //if (TestSuiteWriterUtils.needToUseAgent() && !Properties.NO_RUNTIME_DEPENDENCY) {
+        //    builder.append(getRunner());
+        //}
 
         builder.append(adapter.getClassDefinition(test_name));
 

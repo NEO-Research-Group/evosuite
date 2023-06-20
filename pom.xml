@@ -6,7 +6,7 @@
     <artifactId>evosuite</artifactId>
     <name>EvoSuite</name>
     <description>n/a</description>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.2.1-AI4DEV</version>
     <packaging>pom</packaging>
     <url>http://www.evosuite.org/</url>
     <inceptionYear>2010</inceptionYear>
@@ -453,11 +453,11 @@
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>file:///Users/francis/Documents/luna-workspace/evosuite/etc/repo</url>
         </snapshotRepository>
         <repository>
             <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <url>file:///Users/francis/Documents/luna-workspace/evosuite/etc/repo</url>
         </repository>
     </distributionManagement>
 
@@ -474,18 +474,6 @@
         </extensions>
 
         <plugins>
-
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.8</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                </configuration>
-            </plugin>
 
             <!-- we need at least Maven 3.1 due to special features in EvoSuite Maven Plugin -->
             <plugin>

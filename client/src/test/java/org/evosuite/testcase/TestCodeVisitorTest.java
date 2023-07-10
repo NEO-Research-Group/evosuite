@@ -133,7 +133,7 @@ public class TestCodeVisitorTest {
 
         Method m = TestCodeVisitorTest.class.getDeclaredMethod("bar", Object.class);
         GenericMethod gm = new GenericMethod(m, TestCodeVisitorTest.class);
-        TestFactory.getInstance().addMethod(tc, gm, 1, 0);
+        TestFactory.getInstance().addMethod(tc, gm, 1, 0, true);
 
 
         //Check if generic types were correctly analyzed/inferred
@@ -165,7 +165,7 @@ public class TestCodeVisitorTest {
 
         Method m = TestCodeVisitorTest.class.getDeclaredMethod("foo", FakeAbstractClass.class);
         GenericMethod gm = new GenericMethod(m, TestCodeVisitorTest.class);
-        TestFactory.getInstance().addMethod(tc, gm, 1, 0);
+        TestFactory.getInstance().addMethod(tc, gm, 1, 0, true);
 
 
         //Check if generic types were correctly analyzed/inferred

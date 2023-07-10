@@ -138,7 +138,7 @@ public class TestTestSuiteMinimizer {
 
         Method m = clazz.getRawClass().getMethod("testMe", new Class<?>[]{int.class});
         GenericMethod method = new GenericMethod(m, sut);
-        testFactory.addMethod(test, method, 11, 0);
+        testFactory.addMethod(test, method, 11, 0, true);
 
         assertEquals(12, test.size());
 
@@ -181,7 +181,7 @@ public class TestTestSuiteMinimizer {
 
         Method m = clazz.getRawClass().getMethod("testMe", new Class<?>[]{int.class});
         GenericMethod method = new GenericMethod(m, sut);
-        testFactory.addMethod(test, method, 11, 0);
+        testFactory.addMethod(test, method, 11, 0, true);
 
         assertEquals(12, test.size());
 
@@ -230,7 +230,7 @@ public class TestTestSuiteMinimizer {
 
         Method m = clazz.getRawClass().getMethod("testMe", new Class<?>[]{int.class});
         GenericMethod method = new GenericMethod(m, sut);
-        testFactory.addMethod(test, method, 11, 0);
+        testFactory.addMethod(test, method, 11, 0, true);
 
         parameters = new ArrayList<>();
         for (int i = 12; i < 15; i++) {
@@ -238,7 +238,7 @@ public class TestTestSuiteMinimizer {
             VariableReference vr = test.addStatement(ips, i);
         }
         ct = new ConstructorStatement(test, gc, parameters);
-        testFactory.addMethod(test, method, 15, 0);
+        testFactory.addMethod(test, method, 15, 0, true);
 
         assertEquals(16, test.size());
 
@@ -281,7 +281,7 @@ public class TestTestSuiteMinimizer {
 
         Method m = clazz.getRawClass().getMethod("testMe", new Class<?>[]{int.class});
         GenericMethod method = new GenericMethod(m, sut);
-        testFactory.addMethod(test, method, 11, 0);
+        testFactory.addMethod(test, method, 11, 0, true);
 
         parameters = new ArrayList<>();
         for (int i = 12; i < 15; i++) {
@@ -289,7 +289,7 @@ public class TestTestSuiteMinimizer {
             VariableReference vr = test.addStatement(ips, i);
         }
         ct = new ConstructorStatement(test, gc, parameters);
-        testFactory.addMethod(test, method, 15, 0);
+        testFactory.addMethod(test, method, 15, 0, true);
 
         assertEquals(16, test.size());
 
@@ -337,7 +337,7 @@ public class TestTestSuiteMinimizer {
 
         Method m = clazz.getRawClass().getMethod("testMe", new Class<?>[]{int.class});
         GenericMethod method = new GenericMethod(m, sut);
-        testFactory.addMethod(test, method, 11, 0);
+        testFactory.addMethod(test, method, 11, 0, true);
 
         parameters = new ArrayList<>();
         for (int i = 12; i < 15; i++) {
@@ -345,7 +345,7 @@ public class TestTestSuiteMinimizer {
             VariableReference vr = test.addStatement(ips, i);
         }
         ct = new ConstructorStatement(test, gc, parameters);
-        testFactory.addMethod(test, method, 15, 0);
+        testFactory.addMethod(test, method, 15, 0, true);
 
         assertEquals(16, test.size());
 

@@ -19,8 +19,23 @@
  */
 package org.evosuite.testcase;
 
-import com.googlecode.gentyref.CaptureType;
-import com.googlecode.gentyref.GenericTypeReflector;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.ClassUtils;
 import org.evosuite.Properties;
 import org.evosuite.TestGenerationContext;
@@ -35,20 +50,38 @@ import org.evosuite.setup.TestCluster;
 import org.evosuite.setup.TestClusterGenerator;
 import org.evosuite.setup.TestUsageChecker;
 import org.evosuite.testcase.mutation.RandomInsertion;
-import org.evosuite.testcase.statements.*;
+import org.evosuite.testcase.statements.ArrayStatement;
+import org.evosuite.testcase.statements.AssignmentStatement;
+import org.evosuite.testcase.statements.ConstructorStatement;
+import org.evosuite.testcase.statements.FieldStatement;
+import org.evosuite.testcase.statements.FunctionalMockForAbstractClassStatement;
+import org.evosuite.testcase.statements.FunctionalMockStatement;
+import org.evosuite.testcase.statements.MethodStatement;
+import org.evosuite.testcase.statements.NullStatement;
+import org.evosuite.testcase.statements.PrimitiveStatement;
+import org.evosuite.testcase.statements.Statement;
 import org.evosuite.testcase.statements.environment.EnvironmentStatements;
 import org.evosuite.testcase.statements.reflection.PrivateFieldStatement;
 import org.evosuite.testcase.statements.reflection.PrivateMethodStatement;
 import org.evosuite.testcase.statements.reflection.ReflectionFactory;
-import org.evosuite.testcase.variable.*;
+import org.evosuite.testcase.variable.ArrayIndex;
+import org.evosuite.testcase.variable.ArrayReference;
+import org.evosuite.testcase.variable.FieldReference;
+import org.evosuite.testcase.variable.NullReference;
+import org.evosuite.testcase.variable.VariableReference;
 import org.evosuite.utils.Randomness;
-import org.evosuite.utils.generic.*;
+import org.evosuite.utils.generic.GenericAccessibleObject;
+import org.evosuite.utils.generic.GenericClass;
+import org.evosuite.utils.generic.GenericClassFactory;
+import org.evosuite.utils.generic.GenericConstructor;
+import org.evosuite.utils.generic.GenericField;
+import org.evosuite.utils.generic.GenericMethod;
+import org.evosuite.utils.generic.GenericUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.googlecode.gentyref.CaptureType;
+import com.googlecode.gentyref.GenericTypeReflector;
 
 /*
  * A note about terminology: this class currently uses the term "object" or
@@ -127,7 +160,7 @@ public class TestFactory {
                 GenericMethod method = (GenericMethod) call;
                 if (call.isStatic() || !method.getDeclaringClass().isAssignableFrom(callee.getVariableClass())) {
                     // Static methods / methods in other classes can be modifiers of the SUT if the SUT depends on static fields
-                    addMethod(test, method, position, 0);
+                    addMethod(test, method, position, 0, true);
                 } else {
                     addMethodFor(test,
                             callee,
@@ -231,7 +264,7 @@ public class TestFactory {
     public VariableReference addConstructor(TestCase test,
                                             GenericConstructor constructor, int position, int recursionDepth)
             throws ConstructionFailedException {
-        return addConstructor(test, constructor, null, position, recursionDepth);
+        return addConstructor(test, constructor, null, position, recursionDepth, true);
     }
 
     /**
@@ -252,12 +285,13 @@ public class TestFactory {
      * @param exactType
      * @param position       the position at which to insert
      * @param recursionDepth the current recursion depth
+     * @param allowNullParameter TODO
      * @return a reference to the result of the constructor call
      * @throws ConstructionFailedException if the maximum recursion depth has been reached
      */
     public VariableReference addConstructor(TestCase test,
                                             GenericConstructor constructor, Type exactType, int position,
-                                            int recursionDepth) throws ConstructionFailedException {
+                                            int recursionDepth, boolean allowNullParameter) throws ConstructionFailedException {
 
         if (recursionDepth > Properties.MAX_RECURSION) {
             logger.debug("Max recursion depth reached");
@@ -276,7 +310,7 @@ public class TestFactory {
                     Arrays.asList(constructor.getConstructor().getParameters()),
                     position,
                     recursionDepth + 1,
-                    true, false, true);
+                    allowNullParameter, false, true);
             int newLength = test.size();
             position += (newLength - length);
 
@@ -450,11 +484,12 @@ public class TestFactory {
      * @param method         the method call to insert
      * @param position       the position at which to add the call
      * @param recursionDepth the current recursion depth (see above)
+     * @param allowNull TODO
      * @return a reference to the return value of the inserted method call
      * @throws ConstructionFailedException if the maximum recursion depth has been reached
      */
     public VariableReference addMethod(TestCase test, GenericMethod method, int position,
-                                       int recursionDepth) throws ConstructionFailedException {
+                                       int recursionDepth, boolean allowNull) throws ConstructionFailedException {
 
         logger.debug("Recursion depth: " + recursionDepth);
         if (recursionDepth > Properties.MAX_RECURSION) {
@@ -491,7 +526,7 @@ public class TestFactory {
             parameters = satisfyParameters(test, callee,
                     Arrays.asList(method.getParameterTypes()),
                     Arrays.asList(method.getMethod().getParameters()),
-                    position, recursionDepth + 1, true, false, true);
+                    position, recursionDepth + 1, allowNull, false, true);
 
         } catch (ConstructionFailedException e) {
             // TODO: Re-insert in new test cluster
@@ -591,7 +626,7 @@ public class TestFactory {
                     test.size(), 0);
         } else if (statement instanceof MethodStatement) {
             GenericMethod method = ((MethodStatement) statement).getMethod();
-            addMethod(test, method, test.size(), 0);
+            addMethod(test, method, test.size(), 0, true);
         } else if (statement instanceof PrimitiveStatement<?>) {
             addPrimitive(test, (PrimitiveStatement<?>) statement, test.size());
             // test.statements.add((PrimitiveStatement) statement);
@@ -852,7 +887,7 @@ public class TestFactory {
         } else if (o.isMethod()) {
 
             logger.debug("Attempting generating of Object.class via method {} of type Object.class", o);
-            VariableReference ret = addMethod(test, (GenericMethod) o, position, recursionDepth + 1);
+            VariableReference ret = addMethod(test, (GenericMethod) o, position, recursionDepth + 1, true);
             logger.debug("Success in generating type Object.class");
             ret.setDistance(recursionDepth + 1);
             return ret;
@@ -1235,6 +1270,9 @@ public class TestFactory {
                                           boolean allowNull, boolean canUseFunctionalMocks,
                                           boolean canReuseVariables) throws ConstructionFailedException {
         GenericClass<?> clazz = GenericClassFactory.get(type);
+        
+        reportAnnotations(clazz);
+        
 
         logger.debug("Going to create object for type {}", type);
         VariableReference ret = null;
@@ -1330,7 +1368,7 @@ public class TestFactory {
             } else if (o.isMethod()) {
                 logger.debug("Attempting generating of " + type + " via method " + (o) + " of type " + type);
 
-                ret = addMethod(test, (GenericMethod) o, position, recursionDepth + 1);
+                ret = addMethod(test, (GenericMethod) o, position, recursionDepth + 1, true);
 
                 // TODO: Why are we doing this??
                 //if (o.isStatic()) {
@@ -1344,17 +1382,80 @@ public class TestFactory {
                             ", at position " + position);
                 }
 
-                ret = addConstructor(test, (GenericConstructor) o, type, position, recursionDepth + 1);
+                boolean notManagedByDepencyInject = !isManagedByDependecyInjector(clazz);
+                ret = addConstructor(test, (GenericConstructor) o, type, position, recursionDepth + 1, notManagedByDepencyInject);
             } else {
                 logger.debug("No generators found for type {}", type);
                 throw new ConstructionFailedException("No generator found for type " + type);
             }
+            
+            // TODO
         }
 
         ret.setDistance(recursionDepth + 1);
         logger.debug("Success in generation of type {} at position {}", type, position);
         return ret;
     }
+    
+    private boolean isManagedByDependecyInjector(GenericClass<?> clazz) {
+    	if (!clazz.isPrimitive()) {
+        	Class<?> rawClass = clazz.getRawClass();
+			for (Annotation a: rawClass.getAnnotations()) {
+        		logger.info("Annotation " +a.toString()+" found in class "+clazz.getRawClass().getCanonicalName());
+        		logger.info("->"+a.annotationType().getCanonicalName());
+        		if (a.annotationType().getCanonicalName().equals("org.springframework.web.bind.annotation.RestController")) {
+        			logger.info("Yuju!");
+        			return true;
+        		}
+        	}
+			for (Method m: rawClass.getMethods()) {
+				if (m.getAnnotations().length > 0) {
+					logger.info("For method "+m.getName()+" we find these annotations");
+					for (Annotation a: m.getAnnotations()) {
+		        		logger.info("\t" +a.toString());
+		        	}
+				}
+			}
+			
+			
+			for (Field f: rawClass.getDeclaredFields()) { //FIXME: only public fields obtained this way
+				if (f.getAnnotations().length > 0) {
+					logger.info("For field "+f.getName()+" we find these annotations");
+					for (Annotation a: f.getAnnotations()) {
+		        		logger.info("\t" +a.toString());
+		        	}
+				}
+			}
+        }
+    	return false;
+    }
+
+	private void reportAnnotations(GenericClass<?> clazz) {
+		if (!clazz.isPrimitive()) {
+        	Class<?> rawClass = clazz.getRawClass();
+			for (Annotation a: rawClass.getAnnotations()) {
+        		logger.info("Annotation " +a.toString()+" found in class "+clazz.getRawClass().getCanonicalName());
+        	}
+			for (Method m: rawClass.getMethods()) {
+				if (m.getAnnotations().length > 0) {
+					logger.info("For method "+m.getName()+" we find these annotations");
+					for (Annotation a: m.getAnnotations()) {
+		        		logger.info("\t" +a.toString());
+		        	}
+				}
+			}
+			
+			
+			for (Field f: rawClass.getDeclaredFields()) { //FIXME: only public fields obtained this way
+				if (f.getAnnotations().length > 0) {
+					logger.info("For field "+f.getName()+" we find these annotations");
+					for (Annotation a: f.getAnnotations()) {
+		        		logger.info("\t" +a.toString());
+		        	}
+				}
+			}
+        }
+	}
 
 
     /**
@@ -2145,7 +2246,7 @@ public class TestFactory {
                         addMethodFor(test, callee, m.copyWithNewOwner(callee.getGenericClass()), position);
                         return position;
                     } else {
-                        addMethod(test, m, position, 0);
+                        addMethod(test, m, position, 0, true);
                         return position;
                     }
                 } else {
@@ -2228,7 +2329,7 @@ public class TestFactory {
                     addMethodFor(test, callee, m.copyWithNewOwner(callee.getGenericClass()), position);
                 } else {
                     // We only use this for static methods to avoid using wrong constructors (?)
-                    addMethod(test, m, position, 0);
+                    addMethod(test, m, position, 0, true);
                 }
             } else if (o.isField()) {
                 GenericField f = (GenericField) o;

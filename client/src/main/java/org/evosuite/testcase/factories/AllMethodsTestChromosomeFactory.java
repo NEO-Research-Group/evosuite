@@ -114,7 +114,7 @@ public class AllMethodsTestChromosomeFactory implements ChromosomeFactory<TestCh
                 TestFactory testFactory = TestFactory.getInstance();
 
                 if (call.isMethod()) {
-                    testFactory.addMethod(test, (GenericMethod) call, test.size(), 0);
+                    testFactory.addMethod(test, (GenericMethod) call, test.size(), 0, true);
                 } else if (call.isConstructor()) {
                     testFactory.addConstructor(test, (GenericConstructor) call,
                             test.size(), 0);

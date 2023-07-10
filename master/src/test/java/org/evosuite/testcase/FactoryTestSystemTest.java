@@ -100,7 +100,7 @@ public class FactoryTestSystemTest extends SystemTestBase {
                 FactoryExample.class);
         DefaultTestCase test = new DefaultTestCase();
         Properties.PRIMITIVE_REUSE_PROBABILITY = 0.0;
-        testFactory.addMethod(test, method, 0, 0);
+        testFactory.addMethod(test, method, 0, 0, true);
         String code = test.toCode();
         System.out.println(code);
         assertEquals(4, test.size());
@@ -118,8 +118,8 @@ public class FactoryTestSystemTest extends SystemTestBase {
         DefaultTestCase test = new DefaultTestCase();
         Properties.PRIMITIVE_REUSE_PROBABILITY = 1.0;
         Properties.OBJECT_REUSE_PROBABILITY = 1.0;
-        testFactory.addMethod(test, method, 0, 0);
-        testFactory.addMethod(test, method, 3, 0);
+        testFactory.addMethod(test, method, 0, 0, true);
+        testFactory.addMethod(test, method, 3, 0, true);
         String code = test.toCode();
         System.out.println(code);
 
@@ -139,9 +139,9 @@ public class FactoryTestSystemTest extends SystemTestBase {
         DefaultTestCase test = new DefaultTestCase();
         Properties.PRIMITIVE_REUSE_PROBABILITY = 0.0;
         Properties.OBJECT_REUSE_PROBABILITY = 0.0;
-        testFactory.addMethod(test, method, 0, 0);
+        testFactory.addMethod(test, method, 0, 0, true);
         testFactory.reset();
-        testFactory.addMethod(test, method, 4, 0);
+        testFactory.addMethod(test, method, 4, 0, true);
         String code = test.toCode();
         System.out.println(code);
 
@@ -160,11 +160,11 @@ public class FactoryTestSystemTest extends SystemTestBase {
 
         GenericMethod method = new GenericMethod(sut.getMethod("testStatic"), sut);
         DefaultTestCase test = new DefaultTestCase();
-        testFactory.addMethod(test, method, 0, 0);
+        testFactory.addMethod(test, method, 0, 0, true);
         assertEquals(1, test.size());
         testFactory.reset();
 
-        testFactory.addMethod(test, method, 1, 0);
+        testFactory.addMethod(test, method, 1, 0, true);
         assertEquals(2, test.size());
         String code = test.toCode();
         System.out.println(code);

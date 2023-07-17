@@ -120,7 +120,7 @@ public class GenerateMojo extends AbstractMojo {
 
 
     @Parameter(property = "diProfile", defaultValue = "Spring")
-    private String diProfile; // CHRISTIAN
+    private String diProfile;
 
     /**
      * Defines files in the source directories to include (all .java files by default).
@@ -247,7 +247,7 @@ public class GenerateMojo extends AbstractMojo {
         params.add(target);
         params.add("-Dcriterion=" + criterion);
         params.add("-Dctg_schedule=" + schedule);
-        params.add("-DdiProfile=" + diProfile); // CHRISTIAN
+        params.add("-DdiProfile=" + diProfile);
         if (schedule.toUpperCase().equals(Properties.AvailableSchedule.HISTORY.toString())) {
             try {
                 List<File> files = FileUtils.scan(this.project.getCompileSourceRoots(), this.includes, this.excludes);
@@ -308,14 +308,6 @@ public class GenerateMojo extends AbstractMojo {
         String path = writeClasspathToFile(cp);
         params.add("-DCP_file_path=" + path);
         //params.add("-DCP=" + cp); //this did not work properly on Windows
-
-        // CHRISTIAN
-        getLog().info("\n\n\n **************++ \n\n\n");
-        for (String s : params) {
-            getLog().info(s);
-        }
-        getLog().info("\n\n\n **************++ \n\n\n");
-        // END CHRISTIAN
 
         EvoSuiteRunner runner = new EvoSuiteRunner(getLog(), artifacts, projectBuilder, repoSession);
         runner.registerShutDownHook();

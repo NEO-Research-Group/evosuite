@@ -183,6 +183,8 @@ public class ProcessRunner {
         list.add("-DtimeInMinutesPerClass=" + params.getTime());
         list.add("-DspawnManagerPort=" + port);
 
+        list.add("-DdiProfile=" + "Spring")  // CHRISTIAN
+
         if (classes != null && classes.size() >= 0) {
             if (classes.size() <= 10) {
                 String cuts = getCommaList(classes);

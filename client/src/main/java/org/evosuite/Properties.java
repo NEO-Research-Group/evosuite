@@ -938,6 +938,12 @@ public class Properties {
     @Parameter(key = "ctg_debug_port", group = "Continuous Test Generation", description = "Port for remote debugging of 'Master' spawn processes. 'Clinet' process will have port+1. This only applies when for a single CUT.")
     public static Integer CTG_DEBUG_PORT = null;
 
+    // ---------------------------------------------------------------
+    // AI4Dev
+
+    @Parameter(key = "diProfile", group = "AI4Dev", description = "Dependency injection profile")
+    public static String DI_PROFILE = "Spring";
+
     /**
      * The types of CTG schedules that can be used
      */

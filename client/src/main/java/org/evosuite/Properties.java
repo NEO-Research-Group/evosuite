@@ -39,10 +39,7 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Central property repository. All global parameters of EvoSuite should be
@@ -943,6 +940,10 @@ public class Properties {
 
     @Parameter(key = "diProfile", group = "AI4Dev", description = "Dependency injection profile")
     public static String DI_PROFILE = "Spring";
+
+
+    @Parameter(key = "diProfileSpringA", group = "AI4Dev", description = "Annotations for the Spring case in Dependency injection profile")
+    public static String[] DI_PROFILE_SPRING_ANNOTATIONS;
 
     /**
      * The types of CTG schedules that can be used

@@ -37,10 +37,7 @@ import org.evosuite.utils.SpawnProcessKeepAliveChecker;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Generate JUnit tests
@@ -121,6 +118,10 @@ public class GenerateMojo extends AbstractMojo {
 
     @Parameter(property = "diProfile", defaultValue = "Spring")
     private String diProfile;
+
+
+    @Parameter(property = "diProfileSpringA")
+    public String[] diProfileSpringA;
 
     /**
      * Defines files in the source directories to include (all .java files by default).
@@ -248,6 +249,7 @@ public class GenerateMojo extends AbstractMojo {
         params.add("-Dcriterion=" + criterion);
         params.add("-Dctg_schedule=" + schedule);
         params.add("-DdiProfile=" + diProfile);
+        params.add("-DdiProfileSpringA=" + Arrays.toString(diProfileSpringA));
         if (schedule.toUpperCase().equals(Properties.AvailableSchedule.HISTORY.toString())) {
             try {
                 List<File> files = FileUtils.scan(this.project.getCompileSourceRoots(), this.includes, this.excludes);

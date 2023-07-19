@@ -184,6 +184,7 @@ public class ProcessRunner {
         list.add("-DspawnManagerPort=" + port);
 
         list.add("-DdiProfile=" + "Spring")
+        list.add("-DdiProfileSpringA=" + params.)
 
         if (classes != null && classes.size() >= 0) {
             if (classes.size() <= 10) {

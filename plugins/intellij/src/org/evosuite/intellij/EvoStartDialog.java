@@ -360,6 +360,7 @@ public class EvoStartDialog extends JDialog {
         String javaHome = javaHomeField.getText();
         String evosuiteJar = evosuiteLocationTesxField.getText();
 
+        if ()
 
         List<String> errors = new ArrayList<>();
 

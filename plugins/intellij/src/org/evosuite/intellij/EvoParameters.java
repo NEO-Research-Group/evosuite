@@ -58,6 +58,10 @@ public class EvoParameters {
     private int guiWidth;
     private int guiHeight;
 
+    private String diProfile;
+
+    private String[] diProfileSpringA;
+
 
     public static EvoParameters getInstance() {
         return singleton;
@@ -85,6 +89,8 @@ public class EvoParameters {
 
         guiWidth = p.getInt(GUI_DIALOG_WIDTH, 570);
         guiHeight = p.getInt(GUI_DIALOG_HEIGHT, 300);
+
+        diProfile = p.getValue("diprofile_evosuite_param", "");
     }
 
     public void save(Project project) {
@@ -99,6 +105,7 @@ public class EvoParameters {
         p.setValue(EXECUTION_MODE, executionMode);
         p.setValue(GUI_DIALOG_WIDTH, "" + guiWidth);
         p.setValue(GUI_DIALOG_HEIGHT, "" + guiHeight);
+        p.setValue("diprofile_evosuite_param", diProfile);
     }
 
     private String getPossibleLocationForMvn() {
@@ -221,5 +228,22 @@ public class EvoParameters {
 
     public void setGuiHeight(int guiHeight) {
         this.guiHeight = guiHeight;
+    }
+
+
+    public String getDiProfile() {
+        return diProfile;
+    }
+
+    public void setDiProfile(String diProfile) {
+        this.diProfile = diProfile;
+    }
+
+    public String[] getDiProfileSpringA() {
+        return diProfileSpringA;
+    }
+
+    public void setDiProfileSpringA(String[] diProfileSpringA) {
+        this.diProfileSpringA = diProfileSpringA;
     }
 }

@@ -935,16 +935,6 @@ public class Properties {
     @Parameter(key = "ctg_debug_port", group = "Continuous Test Generation", description = "Port for remote debugging of 'Master' spawn processes. 'Clinet' process will have port+1. This only applies when for a single CUT.")
     public static Integer CTG_DEBUG_PORT = null;
 
-    // ---------------------------------------------------------------
-    // AI4Dev
-
-    @Parameter(key = "diProfile", group = "AI4Dev", description = "Dependency injection profile")
-    public static String DI_PROFILE = "Spring";
-
-
-    @Parameter(key = "diProfileSpringA", group = "AI4Dev", description = "Annotations for the Spring case in Dependency injection profile")
-    public static String[] DI_PROFILE_SPRING_ANNOTATIONS;
-
     /**
      * The types of CTG schedules that can be used
      */
@@ -1669,6 +1659,16 @@ public class Properties {
 
     @Parameter(key = "honour_data_annotations", group = "Runtime", description = "Allows EvoSuite to generate tests with or without honouring the parameter data annotations")
     public static boolean HONOUR_DATA_ANNOTATIONS = true;
+
+    // ---------------------------------------------------------------
+    // AI4Dev
+
+    @Parameter(key = "di_profile", group = "AI4Dev", description = "Dependency injection profile")
+    public static String DI_PROFILE = "Spring";
+
+
+    @Parameter(key = "diProfileSpringA", group = "AI4Dev", description = "Annotations for the Spring case in Dependency injection profile")
+    public static String[] DI_PROFILE_SPRING_ANNOTATIONS = new String[]{};
 
     /**
      * Get all parameters that are available

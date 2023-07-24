@@ -1272,7 +1272,6 @@ public class TestFactory {
         GenericClass<?> clazz = GenericClassFactory.get(type);
         
         reportAnnotations(clazz);
-        
 
         logger.debug("Going to create object for type {}", type);
         VariableReference ret = null;

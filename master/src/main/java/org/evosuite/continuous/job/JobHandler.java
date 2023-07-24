@@ -473,8 +473,11 @@ public class JobHandler extends Thread {
          */
         commands.add("-Dctg_schedule=" + Properties.CTG_SCHEDULE);
         commands.add("-Dctg_min_time_per_job=" + Properties.CTG_MIN_TIME_PER_JOB);
-        commands.add("-DdiProfile=" + Properties.DI_PROFILE);
-        commands.add("-DdiProfileSpringA=" + Properties.DI_PROFILE_SPRING_ANNOTATIONS);
+        commands.add("-Ddi_profile=" + Properties.DI_PROFILE);
+        commands.add("-DdiProfileSpringA=" + Arrays.toString(Properties.DI_PROFILE_SPRING_ANNOTATIONS).
+                replace("[", "").
+                replace("]", "").
+                replaceAll(", ", ":"));
 
         if (Properties.CTG_EXTRA_ARGS != null && !Properties.CTG_EXTRA_ARGS.isEmpty()) {
 

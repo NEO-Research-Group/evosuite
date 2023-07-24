@@ -19,6 +19,7 @@
  */
 package org.evosuite.utils;
 
+import org.evosuite.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +28,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -79,6 +81,7 @@ public class SpawnProcessKeepAliveChecker {
                         Socket socket = server.accept();
                         socket.setKeepAlive(true);
                         executor.submit(new KeepAliveTask(socket));
+
                         logger.info("Registered remote process from " + socket.getRemoteSocketAddress());
                     } catch (IOException e) {
                         //fine, expected

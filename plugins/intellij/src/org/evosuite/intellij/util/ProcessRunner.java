@@ -113,6 +113,9 @@ public class ProcessRunner {
         list.add("-Dctg_time_per_class=" + params.getTime());
         list.add("-Dctg_export_folder=" + params.getFolder());
 
+        list.add("-DdiProfile=" + params.getDiProfile());
+        list.add("-DdiProfileSpringA=" + Arrays.toString(params.getDiProfileSpringA()));
+
         if (classes != null && classes.size() >= 0) {
             if (classes.size() <= 10) {
                 String cuts = getCommaList(classes);
@@ -183,8 +186,8 @@ public class ProcessRunner {
         list.add("-DtimeInMinutesPerClass=" + params.getTime());
         list.add("-DspawnManagerPort=" + port);
 
-        list.add("-DdiProfile=" + "Spring")
-        list.add("-DdiProfileSpringA=" + params.)
+        list.add("-DdiProfile=" + params.getDiProfile());
+        list.add("-DdiProfileSpringA=" + Arrays.toString(params.getDiProfileSpringA()));
 
         if (classes != null && classes.size() >= 0) {
             if (classes.size() <= 10) {

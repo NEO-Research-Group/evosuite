@@ -212,6 +212,7 @@ public class GenerateMojo extends AbstractMojo {
             return;
         }
 
+
         runEvoSuiteOnSeparatedProcess(target, cp, basedir.getAbsolutePath());
 
     }
@@ -248,8 +249,11 @@ public class GenerateMojo extends AbstractMojo {
         params.add(target);
         params.add("-Dcriterion=" + criterion);
         params.add("-Dctg_schedule=" + schedule);
-        params.add("-DdiProfile=" + diProfile);
-        params.add("-DdiProfileSpringA=" + Arrays.toString(diProfileSpringA));
+        params.add("-Ddi_profile=" + diProfile);
+        params.add("-DdiProfileSpringA=" + Arrays.toString(diProfileSpringA).
+                replace("[", "").
+                replace("]", "").
+                replaceAll(", ", ":"));
         if (schedule.toUpperCase().equals(Properties.AvailableSchedule.HISTORY.toString())) {
             try {
                 List<File> files = FileUtils.scan(this.project.getCompileSourceRoots(), this.includes, this.excludes);

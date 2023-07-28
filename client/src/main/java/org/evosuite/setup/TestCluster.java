@@ -45,8 +45,8 @@ import org.evosuite.junit.CoverageAnalysis;
 import org.evosuite.runtime.util.AtMostOnceLogger;
 import org.evosuite.runtime.util.Inputs;
 import org.evosuite.seeding.CastClassManager;
+import org.evosuite.testcase.DependencyInjection;
 import org.evosuite.testcase.TestCase;
-import org.evosuite.testcase.TestFactory;
 import org.evosuite.testcase.variable.VariableReference;
 import org.evosuite.utils.ListUtil;
 import org.evosuite.utils.Randomness;
@@ -1254,7 +1254,7 @@ public class TestCluster {
         }
 
         // If test already has a SUT call, remove all constructors
-        if (doesTestHaveSUTInstance(test) || TestFactory.isManagedByDependecyInjector(GenericClassFactory.get(Properties.getInitializedTargetClass()))) {
+        if (doesTestHaveSUTInstance(test) || DependencyInjection.isManagedByDependecyInjector(GenericClassFactory.get(Properties.getInitializedTargetClass()))) {
             candidateTestMethods = filterConstructors(candidateTestMethods);
             // It may happen that all remaining test calls are constructors. In this case it's ok.
             if (candidateTestMethods.isEmpty())

@@ -104,7 +104,7 @@ import com.googlecode.gentyref.GenericTypeReflector;
  */
 public class TestFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestFactory.class);
+    static final Logger logger = LoggerFactory.getLogger(TestFactory.class);
 
     /**
      * Keep track of objects we are already trying to generate to avoid cycles
@@ -1384,7 +1384,7 @@ public class TestFactory {
                             ", at position " + position);
                 }
 
-                boolean managedByDepencyInject = isManagedByDependecyInjector(clazz);
+                boolean managedByDepencyInject = DependencyInjection.isManagedByDependecyInjector(clazz);
                 int length = test.size();
                 ret = addConstructor(test, (GenericConstructor) o, type, position, recursionDepth + 1, !managedByDepencyInject);
                 int newLength = test.size();
@@ -1392,7 +1392,7 @@ public class TestFactory {
                 if (managedByDepencyInject) {
                 	position += (newLength-length);
                 	for (Field f: clazz.getRawClass().getDeclaredFields()) {
-                		if (annotationsForField(f).anyMatch(this::isInjectionPointAnnotation)) {
+                		if (annotationsForField(f).anyMatch(DependencyInjection::isInjectionPointAnnotation)) {
                 			length = test.size();
                 			// We have to provide a values for this parameter using reflection
                 			List<VariableReference> parameters = satisfyParameters(test, null,
@@ -1414,7 +1414,7 @@ public class TestFactory {
         			}
                 	for (Method m: clazz.getRawClass().getDeclaredMethods()) {
                 		if (!Modifier.isStatic(m.getModifiers()) &&
-                				annotationsForMethod(m).anyMatch(this::isInjectionPointAnnotation)) {
+                				annotationsForMethod(m).anyMatch(DependencyInjection::isInjectionPointAnnotation)) {
                 			length = test.size();
                 			// We have to provide a values for this parameter using reflection
                 			List<VariableReference> parameters = satisfyParameters(test, ret,
@@ -1440,8 +1440,6 @@ public class TestFactory {
                 logger.debug("No generators found for type {}", type);
                 throw new ConstructionFailedException("No generator found for type " + type);
             }
-            
-            // TODO
         }
 
         ret.setDistance(recursionDepth + 1);
@@ -1449,44 +1447,7 @@ public class TestFactory {
         return ret;
     }
 
-	private boolean isInjectionPointAnnotation(Annotation a) {
-		return a.annotationType().getCanonicalName().equals("es.uma.lcc.neo.ai4dev.testdi.Autowired");
-	}
-    
-    public static boolean isManagedByDependecyInjector(GenericClass<?> clazz) {
-    	if (!clazz.isPrimitive()) {
-        	Class<?> rawClass = clazz.getRawClass();
-			for (Annotation a: rawClass.getAnnotations()) {
-        		logger.info("Annotation " +a.toString()+" found in class "+clazz.getRawClass().getCanonicalName());
-        		logger.info("->"+a.annotationType().getCanonicalName());
-        		if (a.annotationType().getCanonicalName().equals("es.uma.lcc.neo.ai4dev.testdi.Component")) {
-        			logger.info("Yuju!");
-        			return true;
-        		}
-        	}
-			for (Method m: rawClass.getDeclaredMethods()) {
-				if (m.getAnnotations().length > 0) {
-					logger.info("For method "+m.getName()+" we find these annotations");
-					for (Annotation a: m.getAnnotations()) {
-		        		logger.info("\t" +a.toString());
-		        	}
-				}
-			}
-			
-			
-			for (Field f: rawClass.getDeclaredFields()) {
-				if (f.getAnnotations().length > 0) {
-					logger.info("For field "+f.getName()+" we find these annotations");
-					for (Annotation a: f.getAnnotations()) {
-		        		logger.info("\t" +a.toString());
-		        	}
-				}
-			}
-        }
-    	return false;
-    }
-    
-    private Stream<Annotation> annotationsForField(Field f) {
+	private Stream<Annotation> annotationsForField(Field f) {
     	return Stream.of(f.getAnnotations());
     }
     

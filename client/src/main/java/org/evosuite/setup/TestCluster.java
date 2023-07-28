@@ -19,6 +19,24 @@
  */
 package org.evosuite.setup;
 
+import static java.util.stream.Collectors.toCollection;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.evosuite.Properties;
 import org.evosuite.TestGenerationContext;
 import org.evosuite.ga.ConstructionFailedException;
@@ -28,20 +46,18 @@ import org.evosuite.runtime.util.AtMostOnceLogger;
 import org.evosuite.runtime.util.Inputs;
 import org.evosuite.seeding.CastClassManager;
 import org.evosuite.testcase.TestCase;
+import org.evosuite.testcase.TestFactory;
 import org.evosuite.testcase.variable.VariableReference;
 import org.evosuite.utils.ListUtil;
 import org.evosuite.utils.Randomness;
-import org.evosuite.utils.generic.*;
+import org.evosuite.utils.generic.GenericAccessibleObject;
+import org.evosuite.utils.generic.GenericClass;
+import org.evosuite.utils.generic.GenericClassFactory;
+import org.evosuite.utils.generic.GenericClassUtils;
+import org.evosuite.utils.generic.GenericConstructor;
+import org.evosuite.utils.generic.GenericMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Type;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toCollection;
 
 /**
  * For a given system under test (SUT), the test cluster defines the set of available classes,
@@ -1238,7 +1254,7 @@ public class TestCluster {
         }
 
         // If test already has a SUT call, remove all constructors
-        if (doesTestHaveSUTInstance(test)) {
+        if (doesTestHaveSUTInstance(test) || TestFactory.isManagedByDependecyInjector(GenericClassFactory.get(Properties.getInitializedTargetClass()))) {
             candidateTestMethods = filterConstructors(candidateTestMethods);
             // It may happen that all remaining test calls are constructors. In this case it's ok.
             if (candidateTestMethods.isEmpty())

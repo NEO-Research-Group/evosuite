@@ -34,7 +34,9 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ClassUtils;
 import org.evosuite.Properties;
@@ -1382,8 +1384,58 @@ public class TestFactory {
                             ", at position " + position);
                 }
 
-                boolean notManagedByDepencyInject = !isManagedByDependecyInjector(clazz);
-                ret = addConstructor(test, (GenericConstructor) o, type, position, recursionDepth + 1, notManagedByDepencyInject);
+                boolean managedByDepencyInject = isManagedByDependecyInjector(clazz);
+                int length = test.size();
+                ret = addConstructor(test, (GenericConstructor) o, type, position, recursionDepth + 1, !managedByDepencyInject);
+                int newLength = test.size();
+                
+                if (managedByDepencyInject) {
+                	position += (newLength-length);
+                	for (Field f: clazz.getRawClass().getDeclaredFields()) {
+                		if (annotationsForField(f).anyMatch(this::isInjectionPointAnnotation)) {
+                			length = test.size();
+                			// We have to provide a values for this parameter using reflection
+                			List<VariableReference> parameters = satisfyParameters(test, null,
+                                    //we need a reference to the SUT, and one to a variable of same type of chosen field
+                                    Arrays.asList(f.getType()), null,
+                                    position, recursionDepth + 1, false, false, true);
+                			try {
+                                Statement st = new PrivateFieldStatement(test, clazz.getRawClass(), f.getName(),
+                                        ret, parameters.get(0));
+                                newLength = test.size();
+                                position += (newLength - length);
+                                test.addStatement(st, position);
+                                position++;
+                            } catch (NoSuchFieldException e) {
+                                logger.error("Reflection problem: " + e, e);
+                                throw new ConstructionFailedException("Reflection problem");
+                            }
+                		}
+        			}
+                	for (Method m: clazz.getRawClass().getDeclaredMethods()) {
+                		if (!Modifier.isStatic(m.getModifiers()) &&
+                				annotationsForMethod(m).anyMatch(this::isInjectionPointAnnotation)) {
+                			length = test.size();
+                			// We have to provide a values for this parameter using reflection
+                			List<VariableReference> parameters = satisfyParameters(test, ret,
+                					//we need a reference to the SUT, and one to a variable of same type of chosen field
+                					Arrays.asList(m.getParameterTypes()),
+                					Arrays.asList(m.getParameters()),
+                					position, recursionDepth + 1, false, false, true);
+                			Statement st = null;
+                			if (Modifier.isPublic(m.getModifiers())) {
+                				st = new MethodStatement(test, new GenericMethod(m, clazz), ret, parameters);
+                			} else {
+                				st = new PrivateMethodStatement(test, clazz.getRawClass(), m,
+                						ret, parameters, Modifier.isStatic(m.getModifiers()));
+                			}
+                			newLength = test.size();
+                			position += (newLength - length);
+                			test.addStatement(st, position);
+                			position++;
+                		}
+                	}
+                }
             } else {
                 logger.debug("No generators found for type {}", type);
                 throw new ConstructionFailedException("No generator found for type " + type);
@@ -1396,19 +1448,23 @@ public class TestFactory {
         logger.debug("Success in generation of type {} at position {}", type, position);
         return ret;
     }
+
+	private boolean isInjectionPointAnnotation(Annotation a) {
+		return a.annotationType().getCanonicalName().equals("es.uma.lcc.neo.ai4dev.testdi.Autowired");
+	}
     
-    private boolean isManagedByDependecyInjector(GenericClass<?> clazz) {
+    public static boolean isManagedByDependecyInjector(GenericClass<?> clazz) {
     	if (!clazz.isPrimitive()) {
         	Class<?> rawClass = clazz.getRawClass();
 			for (Annotation a: rawClass.getAnnotations()) {
         		logger.info("Annotation " +a.toString()+" found in class "+clazz.getRawClass().getCanonicalName());
         		logger.info("->"+a.annotationType().getCanonicalName());
-        		if (a.annotationType().getCanonicalName().equals("org.springframework.web.bind.annotation.RestController")) {
+        		if (a.annotationType().getCanonicalName().equals("es.uma.lcc.neo.ai4dev.testdi.Component")) {
         			logger.info("Yuju!");
         			return true;
         		}
         	}
-			for (Method m: rawClass.getMethods()) {
+			for (Method m: rawClass.getDeclaredMethods()) {
 				if (m.getAnnotations().length > 0) {
 					logger.info("For method "+m.getName()+" we find these annotations");
 					for (Annotation a: m.getAnnotations()) {
@@ -1418,7 +1474,7 @@ public class TestFactory {
 			}
 			
 			
-			for (Field f: rawClass.getDeclaredFields()) { //FIXME: only public fields obtained this way
+			for (Field f: rawClass.getDeclaredFields()) {
 				if (f.getAnnotations().length > 0) {
 					logger.info("For field "+f.getName()+" we find these annotations");
 					for (Annotation a: f.getAnnotations()) {
@@ -1428,6 +1484,14 @@ public class TestFactory {
 			}
         }
     	return false;
+    }
+    
+    private Stream<Annotation> annotationsForField(Field f) {
+    	return Stream.of(f.getAnnotations());
+    }
+    
+    private Stream<Annotation> annotationsForMethod(Method m) {
+    	return Stream.of(m.getAnnotations());
     }
 
 	private void reportAnnotations(GenericClass<?> clazz) {

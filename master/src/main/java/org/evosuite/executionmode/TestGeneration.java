@@ -308,6 +308,16 @@ public class TestGeneration {
         }
         cmdLine.add("-XX:MaxJavaStackTraceDepth=1000000");
         cmdLine.add("-XX:+StartAttachListener");
+        cmdLine.add("-Djava.security.manager=allow");
+        cmdLine.add("--illegal-access=permit");
+        cmdLine.add("--add-opens");
+        cmdLine.add("java.base/java.util=ALL-UNNAMED");
+        cmdLine.add("--add-opens");
+        cmdLine.add("java.base/java.net=ALL-UNNAMED");
+        cmdLine.add("--add-opens");
+        cmdLine.add("java.base/java.io=ALL-UNNAMED");
+        cmdLine.add("--add-opens");
+        cmdLine.add("java.desktop/java.awt=ALL-UNNAMED");
 
         for (String arg : args) {
             if (!arg.startsWith("-DCP=")) {

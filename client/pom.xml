@@ -13,9 +13,12 @@
 	<artifactId>evosuite-client</artifactId>
 	<packaging>jar</packaging>
 
-	<!-- <profiles> <profile> <id>java8</id> <activation> <jdk>1.8</jdk> </activation> 
-		<dependencies> <dependency> <groupId>com.sun</groupId> <artifactId>tools</artifactId> 
-		</dependency> </dependencies> </profile> </profiles> -->
+	<!-- <profiles> <profile> <id>java8</id> <activation> <jdk>1.8</jdk>
+	</activation> 
+		<dependencies> <dependency> <groupId>com.sun</groupId>
+	<artifactId>tools</artifactId> 
+		</dependency> </dependencies> </profile>
+	</profiles> -->
 
 	<dependencies>
 
@@ -137,6 +140,11 @@
 			<artifactId>junit-platform-runner</artifactId>
 			<version>1.8.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.burningwave</groupId>
+			<artifactId>core</artifactId>
+			<version>12.64.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -145,7 +153,8 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>flatten-maven-plugin</artifactId>
 			</plugin>
-			<!-- FIXME: this is just temporary to make Master tests compile. To remove 
+			<!-- FIXME: this is just temporary to make Master tests compile. To
+			remove 
 				once "com.examples..." is properly handled -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

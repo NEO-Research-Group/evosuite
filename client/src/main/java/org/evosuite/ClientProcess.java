@@ -176,6 +176,8 @@ public class ClientProcess {
          * threads change it if this thread is still running
          */
         boolean onThread = Properties.CLIENT_ON_THREAD;
+        
+        org.burningwave.core.assembler.StaticComponentContainer.Modules.exportAllToAll();
 
         if (args.length > 0) {
             identifier = args[0];

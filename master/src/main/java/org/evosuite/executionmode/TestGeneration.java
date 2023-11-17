@@ -309,6 +309,7 @@ public class TestGeneration {
         cmdLine.add("-XX:MaxJavaStackTraceDepth=1000000");
         cmdLine.add("-XX:+StartAttachListener");
         cmdLine.add("-Djava.security.manager=allow");
+        /*
         cmdLine.add("--illegal-access=permit");
         cmdLine.add("--add-opens");
         cmdLine.add("java.base/java.util=ALL-UNNAMED");
@@ -317,7 +318,20 @@ public class TestGeneration {
         cmdLine.add("--add-opens");
         cmdLine.add("java.base/java.io=ALL-UNNAMED");
         cmdLine.add("--add-opens");
+        cmdLine.add("java.base/java.lang.reflect=ALL-UNNAMED");
+        cmdLine.add("--add-opens");
+        cmdLine.add("java.base/java.text=ALL-UNNAMED");
+        cmdLine.add("--add-opens");
         cmdLine.add("java.desktop/java.awt=ALL-UNNAMED");
+        cmdLine.add("--add-opens");
+        cmdLine.add("java.desktop/java.awt.font=ALL-UNNAMED");
+        cmdLine.add("--add-opens");
+        cmdLine.add("jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED");
+        cmdLine.add("--add-opens");
+        cmdLine.add("jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED");*/
+        
+        
+        
 
         for (String arg : args) {
             if (!arg.startsWith("-DCP=")) {

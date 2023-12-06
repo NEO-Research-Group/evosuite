@@ -308,7 +308,7 @@ public class TestGeneration {
         }
         cmdLine.add("-XX:MaxJavaStackTraceDepth=1000000");
         cmdLine.add("-XX:+StartAttachListener");
-        cmdLine.add("-Djava.security.manager=allow");
+        //cmdLine.add("-Djava.security.manager");
         /*
         cmdLine.add("--illegal-access=permit");
         cmdLine.add("--add-opens");

@@ -849,7 +849,7 @@
 		<systemTests>**/*SystemTest.java</systemTests>
 		<integrationTests>**/*IntTest.java</integrationTests>
 		<rerunFailingTestsCount>0</rerunFailingTestsCount>
-		<revision>1.3.1-AI4DEV</revision>
+		<revision>1.3.2-AI4DEV</revision>
 
 	</properties>
 

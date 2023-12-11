@@ -374,5 +374,17 @@ public interface Statement {
      * @param newRetVal a {@link org.evosuite.testcase.variable.VariableReference} object.
      */
     void setRetval(VariableReference newRetVal);
+    
+    /**
+     * Check if this statement can be removed during the minimization stage.
+     * @return If the statement can be removed during the minimization stage.
+     */
+    boolean isUnremovableStatement();
+    
+    /**
+     * Set if the statement can be removed during the minimization stage.
+     * @param unRemovable
+     */
+    void setUnremovableStatement(boolean unRemovable);
 
 }

@@ -101,6 +101,8 @@ public abstract class AbstractStatement implements Statement, Serializable {
     protected Set<Assertion> assertions = new LinkedHashSet<>();
 
     protected String comment = "";
+    
+    protected boolean unRemovable = false;
 
     /**
      * <p>
@@ -555,4 +557,21 @@ public abstract class AbstractStatement implements Statement, Serializable {
     public boolean isReflectionStatement() {
         return false;
     }
+    
+    /**
+     * Check if this statement can be removed during the minimization stage.
+     * @return If the statement can be removed during the minimization stage.
+     */
+    public boolean isUnremovableStatement() {
+    	return unRemovable;
+    }
+    
+    /**
+     * Set if the statement can be removed during the minimization stage.
+     * @param unRemovable
+     */
+    public void setUnremovableStatement(boolean unRemovable) {
+    	this.unRemovable = unRemovable;
+    }
+    
 }

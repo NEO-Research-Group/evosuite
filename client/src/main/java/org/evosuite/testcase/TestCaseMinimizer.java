@@ -141,6 +141,12 @@ public class TestCaseMinimizer {
 
                 logger.debug("Deleting statement {}", c.test.getStatement(i).getCode());
                 TestChromosome copy = c.clone();
+                
+                if (c.test.getStatement(i).isUnremovableStatement()) {
+                	logger.debug("Statement {} is unremovable",i);
+                	continue;
+                }
+                
                 boolean modified;
                 try {
                     modified = TestFactory.getInstance().deleteStatementGracefully(c.test, i);

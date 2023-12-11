@@ -1402,6 +1402,7 @@ public class TestFactory {
                 			try {
                                 Statement st = new PrivateFieldStatement(test, clazz.getRawClass(), f.getName(),
                                         ret, parameters.get(0));
+                                st.setUnremovableStatement(true); // To void being removed by the minimizer
                                 newLength = test.size();
                                 position += (newLength - length);
                                 test.addStatement(st, position);
@@ -1429,6 +1430,7 @@ public class TestFactory {
                 				st = new PrivateMethodStatement(test, clazz.getRawClass(), m,
                 						ret, parameters, Modifier.isStatic(m.getModifiers()));
                 			}
+                			st.setUnremovableStatement(true); // To avoid being removed by the minimizer
                 			newLength = test.size();
                 			position += (newLength - length);
                 			test.addStatement(st, position);

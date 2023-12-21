@@ -1390,6 +1390,7 @@ public class TestFactory {
                 int newLength = test.size();
                 
                 if (managedByDepencyInject) {
+                	logger.debug("The class is managed by dependency injection");
                 	position += (newLength-length);
                 	for (Field f: clazz.getRawClass().getDeclaredFields()) {
                 		if (annotationsForField(f).anyMatch(DependencyInjection::isInjectionPointAnnotation)) {
@@ -1403,6 +1404,7 @@ public class TestFactory {
                                 Statement st = new PrivateFieldStatement(test, clazz.getRawClass(), f.getName(),
                                         ret, parameters.get(0));
                                 st.setUnremovableStatement(true); // To void being removed by the minimizer
+                                logger.debug("Setting unremovable statement: "+st.toString());
                                 newLength = test.size();
                                 position += (newLength - length);
                                 test.addStatement(st, position);
@@ -1431,6 +1433,7 @@ public class TestFactory {
                 						ret, parameters, Modifier.isStatic(m.getModifiers()));
                 			}
                 			st.setUnremovableStatement(true); // To avoid being removed by the minimizer
+                			logger.debug("Setting unremovable statement: "+st.toString());
                 			newLength = test.size();
                 			position += (newLength - length);
                 			test.addStatement(st, position);

@@ -700,7 +700,8 @@ public class Properties {
          * Max time in seconds
          */
         MAXTIME,
-        MAXGENERATIONS, MAXFITNESSEVALUATIONS, TIMEDELTA
+        MAXGENERATIONS, MAXFITNESSEVALUATIONS, TIMEDELTA,
+        GENERATION0
     }
 
     @Parameter(key = "stopping_condition", group = "Search Algorithm", description = "What condition should be checked to end the search")

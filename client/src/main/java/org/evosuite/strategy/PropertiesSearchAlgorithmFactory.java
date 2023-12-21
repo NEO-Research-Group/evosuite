@@ -65,6 +65,8 @@ public abstract class PropertiesSearchAlgorithmFactory<T extends Chromosome<T>> 
                 return new MaxStatementsStoppingCondition<>();
             case TIMEDELTA:
                 return new TimeDeltaStoppingCondition<>();
+            case GENERATION0:
+            	return new Generation0StoppingCondition<>();
             default:
                 logger.warn("Unknown stopping condition: " + Properties.STOPPING_CONDITION);
                 return new MaxGenerationStoppingCondition<>();

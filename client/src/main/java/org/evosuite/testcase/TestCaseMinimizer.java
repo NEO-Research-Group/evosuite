@@ -144,6 +144,7 @@ public class TestCaseMinimizer {
                 
                 if (c.test.getStatement(i).isUnremovableStatement()) {
                 	logger.debug("Statement {} is unremovable",i);
+                	System.out.println("Unremovable statement: "+c.test.getStatement(i).getCode());
                 	continue;
                 }
                 

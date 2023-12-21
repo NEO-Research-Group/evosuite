@@ -529,6 +529,7 @@ public abstract class AbstractStatement implements Statement, Serializable {
         Statement result = copy(newTestCase, 0);
         result.getReturnValue().setOriginalCode(retval.getOriginalCode());
         result.addComment(getComment());
+        result.setUnremovableStatement(unRemovable);
         return result;
     }
 
